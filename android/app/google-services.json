@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "342418784411",
+    "project_id": "twiddle-b4eed",
+    "storage_bucket": "twiddle-b4eed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342418784411:android:cada0ce85869847f7c863e",
+        "android_client_info": {
+          "package_name": "com.example.twiddle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342418784411-6nf62sm260fdg6fpqoku8133ionktk0k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYaP68P7R0xp7c6ovrvATfvTYWB7_y0Cc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342418784411-6nf62sm260fdg6fpqoku8133ionktk0k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
