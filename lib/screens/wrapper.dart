@@ -5,6 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:twiddle/models/user.dart';
 import 'package:twiddle/screens/auth/sign_up.dart';
 import 'package:twiddle/screens/main/home.dart';
+import 'package:twiddle/screens/main/posts/add.dart';
+import 'package:twiddle/screens/main/profile/edit.dart';
+
+import 'main/profile/profile.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});
@@ -17,6 +21,15 @@ class Wrapper extends StatelessWidget {
     if (user == null){
       return const SignUp();
     }
-    return const Home();
+    return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/' : (context) => const Home(),
+        '/add' : (context) => const Add(),
+        '/profile' : (context) => const Profile(),
+        '/edit' : (context) => const Edit()
+      },
+    );
+   
   }
 }

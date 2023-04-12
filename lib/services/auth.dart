@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/user.dart';
@@ -13,11 +14,13 @@ Stream<UserModel?> get user{
 }
   Future signUpAction(String email, String password) async {
     try {
-      User user = (await auth.createUserWithEmailAndPassword(
+      UserCredential user = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
-      )) as User;
-      _userFromFirebaseUser(user);
+      );
+      await FirebaseFirestore.instance.collection('users').doc(user.user?.uid)
+      .set({'name' : email, 'email' : email});
+      _userFromFirebaseUser(user.user);
     } on FirebaseAuthException catch (e) {
       print(e);
     } catch (e) {
