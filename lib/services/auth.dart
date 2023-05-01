@@ -7,19 +7,19 @@ class AuthService {
   FirebaseAuth auth = FirebaseAuth.instance;
 
 UserModel? _userFromFirebaseUser(User? user){
-  return user != null ? UserModel(id: user.uid) : null;
+  return user != null ? UserModel(id: user.uid, bannerImageUrl: '', email: '', profileImageUrl: '', name: '') : null;
 }
 Stream<UserModel?> get user{
   return auth.authStateChanges().map(_userFromFirebaseUser); 
 }
-  Future signUpAction(String email, String password) async {
+  Future signUpAction(String email, String password, int credits) async {
     try {
       UserCredential user = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       await FirebaseFirestore.instance.collection('users').doc(user.user?.uid)
-      .set({'name' : email, 'email' : email});
+      .set({'name' : email, 'email' : email, 'credits' : credits});
       _userFromFirebaseUser(user.user);
     } on FirebaseAuthException catch (e) {
       print(e);
