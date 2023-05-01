@@ -11,7 +11,7 @@ import 'package:twiddle/services/posts.dart';
 
 
 class Add extends StatefulWidget {
-  const Add({super.key});
+  const Add({Key key}) : super(key: key);
 
   @override
   State<Add> createState() => _AddState();
@@ -47,10 +47,10 @@ class _AddState extends State<Add> {
        credits = doc.get('credits');
     });
   
-   if(credits == null){
-    credits = 0;
-   }
-   print("credits $credits");
+  //  if(credits == null){
+  //   credits = 0;
+  //  }
+  //  print("credits $credits");
    
   }
   @override
@@ -92,20 +92,15 @@ class _AddState extends State<Add> {
               },
               
             ),
-            
+          
           
             
           ),
           
         ),
-        CardField(
-    onCardChanged: (card) {
-        setState(() {
-           _card = card;
-        });
-    },    
-),
-
+       
+      if(maxLength <= 10)
+       Text("Your credits is almost empty. Make a payment to add credits.")
       ]),
       
       
