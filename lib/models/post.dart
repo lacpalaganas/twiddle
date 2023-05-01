@@ -14,14 +14,14 @@ class PostModel {
 
   PostModel( 
     {
-      required this.id, 
-      required this.creator, 
-      required this.text, 
-      required this.timestamp,
-      required this.likesCount,
-      required this.retweetsCount,
-      required this.originalId,
-      required this.retweet,
-      required this.ref
+       this.id, 
+       this.creator, 
+       this.text, 
+       this.timestamp,
+       this.likesCount,
+       this.retweetsCount,
+       this.originalId,
+       this.retweet,
+       this.ref
       });
 }

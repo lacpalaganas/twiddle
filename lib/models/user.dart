@@ -7,10 +7,10 @@ class UserModel {
   
   UserModel(
     {
-      required this.id,
-       required this.bannerImageUrl,
-      required this.profileImageUrl,
-      required this.name,
-      required this.email
+       this.id,
+        this.bannerImageUrl,
+       this.profileImageUrl,
+       this.name,
+       this.email
     });
 }

@@ -11,23 +11,23 @@ import 'package:twiddle/screens/main/profile/edit.dart';
 import 'main/profile/profile.dart';
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({super.key});
+   const Wrapper({Key key}) : super(key: key);
  
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel?>(context);
+    final user = Provider.of<UserModel>(context);
     // ignore: unnecessary_null_comparison
     print(user);
     if (user == null){
-      return const SignUp();
+      return  SignUp();
     }
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/' : (context) => const Home(),
-        '/add' : (context) => const Add(),
-        '/profile' : (context) => const Profile(),
-        '/edit' : (context) => const Edit()
+        '/' : (context) =>  Home(),
+        '/add' : (context) =>  const Add(),
+        '/profile' : (context) =>  Profile(),
+        '/edit' : (context) =>  Edit()
       },
     );
    

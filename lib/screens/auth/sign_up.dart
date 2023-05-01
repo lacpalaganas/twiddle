@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -6,7 +8,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+   SignUp({Key key}) : super(key: key);
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -18,10 +20,62 @@ class _SignUpState extends State<SignUp> {
   String password = '';
   int credits = 0;
 
-  Map<String, dynamic>? paymentIntent;
+  Map<String, dynamic> paymentIntent;
   bool paymentSuccess = false;
   @override
   Widget build(BuildContext context) {
+    Future<void> initPaymentSheet(context, { String email,  int amount}) async {
+      try {
+        // 1. create payment intent on the server
+        final response = await http.post(
+            Uri.parse(
+                'https://us-central1-twiddle-b4eed.cloudfunctions.net/stripePaymentIntentRequest'),
+            body: {
+              'email': email,
+              'amount': amount.toString(),
+            });
+
+        final jsonResponse = jsonDecode(response.body);
+        log(jsonResponse.toString());
+
+        //2. initialize the payment sheet
+        await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: jsonResponse['paymentIntent'],
+            merchantDisplayName: 'twiddle',
+            customerId: jsonResponse['customer'],
+            customerEphemeralKeySecret: jsonResponse['ephemeralKey'],
+            style: ThemeMode.light,
+            //testEnv: true,
+            //merchantCountryCode: 'SG',
+          ),
+        );
+
+        await Stripe.instance.presentPaymentSheet();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Payment completed!')),
+        );
+          setState(() {
+          paymentSuccess = true;
+          credits = 100;
+        });
+      } catch (e) {
+        if (e is StripeException) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error from Stripe: ${e.error.localizedMessage}'),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e')),
+          );
+        }
+      }
+    }
+
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -54,7 +108,7 @@ class _SignUpState extends State<SignUp> {
                    TextButton(
               child: const Text('Make Payment'),
               onPressed: () async {
-                await makePayment();
+                await initPaymentSheet(context, email: email, amount: 100);
               },
             ),
             Text("paymentSuccess: " + paymentSuccess.toString() + "" + credits.toString())
@@ -72,7 +126,7 @@ class _SignUpState extends State<SignUp> {
       await Stripe.instance
           .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
-                  paymentIntentClientSecret: paymentIntent![
+                  paymentIntentClientSecret: paymentIntent[
                       'client_secret'], //Gotten from payment intent
                   style: ThemeMode.dark,
                   merchantDisplayName: 'Ikay'))

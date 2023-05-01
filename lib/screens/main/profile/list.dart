@@ -2,20 +2,22 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:twiddle/models/post.dart';
 import 'package:twiddle/models/user.dart';
 
+
 class ListUsers extends StatefulWidget {
-  ListUsers({Key? key}) : super(key: key);
+  ListUsers({Key key}) : super(key: key);
 
   @override
   _ListUsersState createState() => _ListUsersState();
 }
 
 class _ListUsersState extends State<ListUsers> {
+   
   @override
   Widget build(BuildContext context) {
-    final users = Provider.of<List<UserModel>>(context);
-
+   final users = Provider.of<List<UserModel>>(context) ?? [];
     return ListView.builder(
         shrinkWrap: true,
         itemCount: users.length,

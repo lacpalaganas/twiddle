@@ -11,9 +11,9 @@ class ItemPost extends StatefulWidget {
   final AsyncSnapshot<bool> snapshotRetweet;
   final bool retweet;
 
-  ItemPost(this.post, this.snapshotUser, this.snapshotLike,
+   ItemPost(this.post, this.snapshotUser, this.snapshotLike,
       this.snapshotRetweet, this.retweet,
-      {Key? key})
+      {Key key})
       : super(key: key);
 
   @override
@@ -30,19 +30,12 @@ class _ItemPostState extends State<ItemPost> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.snapshotRetweet.data! || widget.retweet)
-                Text("Retweet"),
-              SizedBox(height: 20),
+             
               Row(
                 children: [
-                  widget.snapshotUser.data!.profileImageUrl != ''
-                      ? CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(
-                              widget.snapshotUser.data!.profileImageUrl))
-                      : Icon(Icons.person, size: 40),
-                  SizedBox(width: 10),
-                  Text(widget.snapshotUser.data!.name)
+                
+                  
+                  Text(widget.snapshotUser.data.name)
                 ],
               ),
             ],
@@ -76,13 +69,13 @@ class _ItemPostState extends State<ItemPost> {
                       children: [
                         IconButton(
                             icon: new Icon(
-                                widget.snapshotRetweet.data!
+                                widget.snapshotRetweet.data
                                     ? Icons.cancel
                                     : Icons.repeat,
                                 color: Colors.blue,
                                 size: 30.0),
                             onPressed: () => _postService.retweet(
-                                widget.post, widget.snapshotRetweet.data!)),
+                                widget.post, widget.snapshotRetweet.data)),
                         Text(widget.post.retweetsCount.toString())
                       ],
                     ),
@@ -90,14 +83,14 @@ class _ItemPostState extends State<ItemPost> {
                       children: [
                         IconButton(
                             icon: new Icon(
-                                widget.snapshotLike.data!
+                                widget.snapshotLike.data
                                     ? Icons.favorite
                                     : Icons.favorite_border,
                                 color: Colors.blue,
                                 size: 30.0),
                             onPressed: () {
                               _postService.likePost(
-                                  widget.post, widget.snapshotLike.data!);
+                                  widget.post, widget.snapshotLike.data);
                             }),
                         Text(widget.post.likesCount.toString())
                       ],

@@ -21,7 +21,7 @@ class UserService{
     }).toList();
   }
 
- UserModel? _userFromFirebaseSnapshot(DocumentSnapshot snapshot) {
+ UserModel _userFromFirebaseSnapshot(DocumentSnapshot snapshot) {
     return snapshot != null
         ? UserModel(
             id: snapshot.id,
@@ -38,7 +38,7 @@ class UserService{
         .collection("users")
         .doc(uid)
         .snapshots()
-        .map(_userFromFirebaseSnapshot as UserModel Function(DocumentSnapshot<Map<String, dynamic>> event));
+        .map(_userFromFirebaseSnapshot);
   }
 
    Future<List<String>> getUserFollowing(uid) async {
@@ -77,7 +77,7 @@ class UserService{
   Future<void> followUser(uid) async {
     await FirebaseFirestore.instance
         .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .doc(FirebaseAuth.instance.currentUser.uid)
         .collection('following')
         .doc(uid)
         .set({});
@@ -86,7 +86,7 @@ class UserService{
         .collection('users')
         .doc(uid)
         .collection('followers')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .doc(FirebaseAuth.instance.currentUser.uid)
         .set({});
   }
 
@@ -113,11 +113,11 @@ class UserService{
 
     if (_bannerImage != null) {
       bannerImageUrl = await _utilsService.uploadFile(_bannerImage,
-          'user/profile/${FirebaseAuth.instance.currentUser?.uid}/banner');
+          'user/profile/${FirebaseAuth.instance.currentUser.uid}/banner');
     }
     if (_profileImage != null) {
       profileImageUrl = await _utilsService.uploadFile(_profileImage,
-          'user/profile/${FirebaseAuth.instance.currentUser?.uid}/profile');
+          'user/profile/${FirebaseAuth.instance.currentUser.uid}/profile');
     }
 
     Map<String, Object> data = new HashMap();

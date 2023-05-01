@@ -15,15 +15,15 @@ class PostService{
       creator: (e.data() as dynamic)['creator'] ?? '',
       timestamp: (e.data() as dynamic)['timestamp'] ?? 0,
       likesCount: (e.data() as dynamic)['likesCount'] ?? 0,
-        retweetsCount: (e.data() as dynamic)['retweetsCount'] ?? 0,
-        retweet: (e.data() as dynamic)['retweet'] ?? false,
-        originalId: (e.data() as dynamic)['originalId'] ?? null,
-        ref: e.reference,
+       // retweetsCount: (e.data() as dynamic)['retweetsCount'] ?? 0,
+        //retweet: (e.data() as dynamic)['retweet'] ?? false,
+       // originalId: (e.data() as dynamic)['originalId'] ?? null,
+       // ref: e.reference,
      );
     }).toList();
   }
 
-   PostModel? _postFromSnapshot(DocumentSnapshot snapshot) {
+   PostModel _postFromSnapshot(DocumentSnapshot snapshot) {
     return snapshot.exists
         ? PostModel(
             id: snapshot.id,
@@ -41,13 +41,13 @@ class PostService{
   Future savePost(text, deductCredit) async {
     await FirebaseFirestore.instance.collection("post").add({
       'text' : text,
-      'creator': FirebaseAuth.instance.currentUser?.uid,
+      'creator': FirebaseAuth.instance.currentUser.uid,
       'timestamp': FieldValue.serverTimestamp(),
       'retweet': false
     });
 
     await FirebaseFirestore.instance.collection("users")
-    .doc(FirebaseAuth.instance.currentUser?.uid).update({"credits": deductCredit});
+    .doc(FirebaseAuth.instance.currentUser.uid).update({"credits": deductCredit});
   }
 
    Future reply(PostModel post, String text) async {
@@ -56,7 +56,7 @@ class PostService{
     }
     await post.ref.collection("replies").add({
       'text': text,
-      'creator': FirebaseAuth.instance.currentUser?.uid,
+      'creator': FirebaseAuth.instance.currentUser.uid,
       'timestamp': FieldValue.serverTimestamp(),
       'retweet': false
     });
@@ -67,19 +67,19 @@ class PostService{
     if (current) {
       post.likesCount = post.likesCount - 1;
       await FirebaseFirestore.instance
-          .collection("posts")
+          .collection("post")
           .doc(post.id)
           .collection("likes")
-          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .doc(FirebaseAuth.instance.currentUser.uid)
           .delete();
     }
     if (!current) {
       post.likesCount = post.likesCount + 1;
       await FirebaseFirestore.instance
-          .collection("posts")
+          .collection("post")
           .doc(post.id)
           .collection("likes")
-          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .doc(FirebaseAuth.instance.currentUser.uid)
           .set({});
     }
   }
@@ -129,10 +129,10 @@ class PostService{
 
   Stream<bool> getCurrentUserLike(PostModel post) {
     return FirebaseFirestore.instance
-        .collection("posts")
+        .collection("post")
         .doc(post.id)
         .collection("likes")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .doc(FirebaseAuth.instance.currentUser.uid)
         .snapshots()
         .map((snapshot) {
       return snapshot.exists;
@@ -151,7 +151,7 @@ class PostService{
     });
   }
 
-  Future<PostModel?> getPostById(String id) async {
+  Future<PostModel> getPostById(String id) async {
     DocumentSnapshot postSnap =
         await FirebaseFirestore.instance.collection("posts").doc(id).get();
 
@@ -175,17 +175,19 @@ Future<List<PostModel>> getReplies(PostModel post) async {
 
   Future<List<PostModel>> getFeed() async {
     List<String> usersFollowing = await UserService() //['uid1', 'uid2']
-        .getUserFollowing(FirebaseAuth.instance.currentUser?.uid);
+        .getUserFollowing(FirebaseAuth.instance.currentUser.uid);
+      print('im here');
+          
 
     var splitUsersFollowing = partition<dynamic>(usersFollowing, 10);
     inspect(splitUsersFollowing);
 
     List<PostModel> feedList = [];
 
-    for (int i = 0; i < splitUsersFollowing.length; i++) {
+     for (int i = 0; i < splitUsersFollowing.length; i++) {
       inspect(splitUsersFollowing.elementAt(i));
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('posts')
+          .collection('post')
           .where('creator', whereIn: splitUsersFollowing.elementAt(i))
           .orderBy('timestamp', descending: true)
           .get();
